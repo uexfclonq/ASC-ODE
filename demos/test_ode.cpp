@@ -4,6 +4,7 @@
 
 #include <nonlinfunc.hpp>
 #include <timestepper.hpp>
+#include <implicitRK.hpp>
 
 using namespace ASC_ode;
 
@@ -43,9 +44,37 @@ int main()
 
   Vector<> y = { 1, 0 };  // initializer list
   auto rhs = std::make_shared<MassSpring>(1.0, 1.0);
-  
-  ExplicitEuler stepper(rhs);
+
+  // choose one of the time-stepping methods:
+
+  // ExplicitEuler stepper(rhs);
   // ImplicitEuler stepper(rhs);
+
+  // 2-stage Gauss-Legendre, tabulated Butcher tableau
+  // ImplicitRungeKutta stepper(rhs, Gauss2a, Gauss2b, Gauss2c);
+
+  // 3-stage Gauss-Legendre, points tabulated, compute a and b
+  auto [Gauss3a,Gauss3b] = computeABfromC (Gauss3c);
+  ImplicitRungeKutta stepper(rhs, Gauss3a, Gauss3b, Gauss3c);
+
+  /*
+  // Gauss-Legendre of arbitrary order
+  int stages = 5;
+  Vector<> c(stages), b1(stages);
+  GaussLegendre(c, b1);
+  auto [a, b] = computeABfromC(c);
+  ImplicitRungeKutta stepper(rhs, a, b, c);
+  */
+
+  /*
+  // Radau IIA of arbitrary order
+  int stages = 5;
+  Vector<> c(stages), b1(stages);
+  GaussRadau(c, b1);
+  auto [a, b] = computeABfromC(c);
+  ImplicitRungeKutta stepper(rhs, a, b, c);
+  */
+
 
   std::ofstream outfile ("output_test_ode.txt");
   std::cout << 0.0 << "  " << y(0) << " " << y(1) << std::endl;
