@@ -93,6 +93,15 @@ namespace ASC_ode
   template <size_t N, typename T = double>
   auto operator+ (T a, const AutoDiff<N, T>& b) { return AutoDiff<N, T>(a) + b; }
 
+  template <size_t N, typename T = double>
+  AutoDiff<N, T> operator- (const AutoDiff<N, T>& a)
+  {
+    AutoDiff<N, T> result(-a.value());
+    for (size_t i = 0; i < N; i++)
+      result.deriv()[i] = -a.deriv()[i];
+    return result;
+  }
+
 
   // product rule
   template <size_t N, typename T = double>
@@ -102,6 +111,18 @@ namespace ASC_ode
     for (size_t i = 0; i < N; i++)
       result.deriv()[i] = a.deriv()[i] * b.value() + a.value() * b.deriv()[i];
     return result;
+  }
+
+  template <size_t N, typename T = double>
+  auto operator* (T a, const AutoDiff<N, T>& b)
+  {
+    return AutoDiff<N, T>(a) * b;
+  }
+
+  template <size_t N, typename T = double>
+  auto operator* (const AutoDiff<N, T>& a, T b)
+  {
+    return a * AutoDiff<N, T>(b);
   }
 
   // sin and cos of doubles must still be found next to the AutoDiff versions
