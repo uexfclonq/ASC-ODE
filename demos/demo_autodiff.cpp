@@ -24,6 +24,8 @@ int main()
 
   AutoDiff<2> prod = adx * ady;
   std::cout << "prod = " << prod << std::endl;
+  AutoDiff<2> sum = adx + ady;
+  std::cout << "sum = " << sum << std::endl;
 
   std::cout << "func1(adx, ady) = " << func1(adx, ady) << std::endl;
 
